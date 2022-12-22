@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct Home: View {
+    @StateObject var canvasModel: CanvasViewModel = .init()
+    
     var body: some View{
         ZStack{
             Color.black.ignoresSafeArea()
             //MARK: Canvas View
-            //Later
+            Canvas().environmentObject(canvasModel)
             
             //MARK: Canvas Actions
             HStack(spacing: 15){
@@ -42,6 +44,7 @@ struct Home: View {
                     .font(.largeTitle)
                     .foregroundColor(.white)
             }
+            .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity,alignment: .bottomTrailing)
         }
         .preferredColorScheme(.dark)
