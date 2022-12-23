@@ -21,6 +21,8 @@ struct Canvas: View {
                     
                     CanvasSubView(stackItem: $stackItem) {
                         stackItem.view
+                    } moveFront: {
+                        moveViewToFront(stackItem: stackItem)
                     }
                 }
             }
@@ -29,7 +31,22 @@ struct Canvas: View {
         //MARK:Your desired height
         .frame(height: height)
         .clipped()
+    }
+    
+    func moveViewToFront(stackItem: StackItem){
+        //Find index and moving to last
+        // Since in ZStack last item will show on first
+        let curentIndex = getIndex(stackItem: stackItem)
+        let lastIndex = canvasModel.stack.count - 1
         
+        //Simplae swapping
+        canvasModel.stack.insert(canvasModel.stack.remove(at: curentIndex), at:lastIndex)
+    }
+    
+    func getIndex(stackItem: StackItem)-> Int{
+        return canvasModel.stack.firstIndex { item in
+            return item.id == stackItem.id
+        } ?? 0
     }
 }
 
@@ -43,10 +60,12 @@ struct Canvas_Previews: PreviewProvider {
 struct CanvasSubView <Content: View> : View {
     var content: Content
     @Binding var stackItem: StackItem
+    var moveFront: () -> ()
     
-    init(stackItem: Binding<StackItem>,@ViewBuilder content: @escaping ()-> Content){
+    init(stackItem: Binding<StackItem>,@ViewBuilder content: @escaping ()-> Content, moveFront: @escaping ()->()){
         self.content = content()
         self._stackItem = stackItem
+        self.moveFront = moveFront
     }
     
     @State var hapticScale: CGFloat = 1
@@ -66,6 +85,7 @@ struct CanvasSubView <Content: View> : View {
                 withAnimation(.easeInOut.delay(0.1)) {
                     hapticScale = 1
                 }
+                moveFront()
             }
             .gesture(
                 DragGesture()
