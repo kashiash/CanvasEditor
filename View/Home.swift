@@ -51,7 +51,9 @@ struct Home: View {
         .preferredColorScheme(.dark)
         .alert(canvasModel.errorMessage, isPresented: $canvasModel.showError){}
         .sheet(isPresented: $canvasModel.showImagePicer) {
-            
+            if let image = UIImage(data: canvasModel.imageData){
+                canvasModel.addImageToStack(image: image)
+            }
         } content: {
             ImagePicker(showPicker: $canvasModel.showImagePicer, imageData: $canvasModel.imageData)
         }
