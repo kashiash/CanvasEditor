@@ -18,7 +18,7 @@ struct Canvas: View {
                 
                 ForEach($canvasModel.stack) { $stackItem in
                     
-                 
+                    
                     CanvasSubView(stackItem: $stackItem) {
                         stackItem.view
                     }
@@ -28,6 +28,8 @@ struct Canvas: View {
         }
         //MARK:Your desired height
         .frame(height: height)
+        .clipped()
+        
     }
 }
 
@@ -45,20 +47,56 @@ struct CanvasSubView <Content: View> : View {
     init(stackItem: Binding<StackItem>,@ViewBuilder content: @escaping ()-> Content){
         self.content = content()
         self._stackItem = stackItem
-        
-        
     }
     
+    @State var hapticScale: CGFloat = 1
     var body: some View {
         content
+            .rotationEffect(stackItem.rotation)
+        //safe scaling
+            .scaleEffect(stackItem.scale < 0.4 ? 0.4 : stackItem.scale)
+            .scaleEffect(hapticScale)
             .offset(stackItem.offset)
-            .gesture(DragGesture().onChanged({ value in
-                stackItem.offset = CGSize(width: stackItem.lastOffset.width +
-                                          value.translation.width, height: stackItem.lastOffset.height +
-                value.translation.height)
-            }).onEnded({value in
-                stackItem.lastOffset = stackItem.offset
-            })
+            .onLongPressGesture(minimumDuration: 0.3) {
+                UIImpactFeedbackGenerator(style: .medium)
+                    .impactOccurred()
+                    withAnimation(.easeInOut) {
+                        hapticScale = 1.2
+                    }
+                withAnimation(.easeInOut.delay(0.1)) {
+                    hapticScale = 1
+                }
+            }
+            .gesture(
+                DragGesture()
+                    .onChanged({ value in
+                        stackItem.offset = CGSize(width: stackItem.lastOffset.width +
+                                                  value.translation.width, height: stackItem.lastOffset.height +
+                                                  value.translation.height)
+                    }).onEnded({value in
+                        stackItem.lastOffset = stackItem.offset
+                        
+                    })
+            )
+            .gesture(
+                MagnificationGesture()
+                    .onChanged({value in
+                        
+                        //MARK: It start with Existing scaling = 1
+                        stackItem.scale = stackItem.lastScale + (value - 1)
+                    }).onEnded({ value in
+                        stackItem.lastScale = stackItem.scale
+                    })
+                //MARK: Simultanously
+                    .simultaneously(with:
+                                        RotationGesture()
+                        .onChanged({ value in
+                            stackItem.rotation = stackItem.lastRotation + value
+                        }).onEnded({ value in
+                            stackItem.lastRotation = stackItem.rotation
+                            
+                        })
+                 )
             )
     }
 }
