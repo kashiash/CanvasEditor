@@ -49,8 +49,11 @@ struct Home: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity,alignment: .bottomTrailing)
         }
         .preferredColorScheme(.dark)
-        .alert(canvasModel.errorMessage, isPresented: $canvasModel.showError){
+        .alert(canvasModel.errorMessage, isPresented: $canvasModel.showError){}
+        .sheet(isPresented: $canvasModel.showImagePicer) {
             
+        } content: {
+            ImagePicker(showPicker: $canvasModel.showImagePicer, imageData: $canvasModel.imageData)
         }
     }
 }
