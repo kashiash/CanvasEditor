@@ -7,7 +7,17 @@
 
 import SwiftUI
 
-struct CanvasViewModel: ObservableObject {
-
+class CanvasViewModel: ObservableObject {
+  //MARK: Canvas Stack
+    @Published var stack: [StackItem] = []
+    
+    //MARK: Image poicker Properties
+    
+    @Published var showImagePicer: Bool = false
+    @Published  var imageData: Data = .init(count: 0)
+    
+    //MARK: Error properties
+    @Published var showError: Bool = false
+    @Published var errorMessage: String = ""
 }
 

@@ -14,6 +14,8 @@
 		761085B02954C2050093D592 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761085AF2954C2050093D592 /* Home.swift */; };
 		761085B22954C7880093D592 /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761085B12954C7880093D592 /* Canvas.swift */; };
 		761085B42954C7A10093D592 /* CanvasViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761085B32954C7A10093D592 /* CanvasViewModel.swift */; };
+		761085B6295506D70093D592 /* StackItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761085B5295506D70093D592 /* StackItem.swift */; };
+		761085B829550A220093D592 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761085B729550A220093D592 /* ImagePicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		761085AF2954C2050093D592 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		761085B12954C7880093D592 /* Canvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
 		761085B32954C7A10093D592 /* CanvasViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasViewModel.swift; sourceTree = "<group>"; };
+		761085B5295506D70093D592 /* StackItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackItem.swift; sourceTree = "<group>"; };
+		761085B729550A220093D592 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +95,7 @@
 			children = (
 				761085AF2954C2050093D592 /* Home.swift */,
 				761085B12954C7880093D592 /* Canvas.swift */,
+				761085B729550A220093D592 /* ImagePicker.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -98,6 +103,7 @@
 		761085AE2954C19E0093D592 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				761085B5295506D70093D592 /* StackItem.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -173,7 +179,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				761085B42954C7A10093D592 /* CanvasViewModel.swift in Sources */,
+				761085B6295506D70093D592 /* StackItem.swift in Sources */,
 				761085A02954C1500093D592 /* ContentView.swift in Sources */,
+				761085B829550A220093D592 /* ImagePicker.swift in Sources */,
 				761085B02954C2050093D592 /* Home.swift in Sources */,
 				7610859E2954C1500093D592 /* CanvasEditorApp.swift in Sources */,
 				761085B22954C7880093D592 /* Canvas.swift in Sources */,

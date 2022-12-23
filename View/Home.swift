@@ -14,7 +14,8 @@ struct Home: View {
         ZStack{
             Color.black.ignoresSafeArea()
             //MARK: Canvas View
-            Canvas().environmentObject(canvasModel)
+            Canvas()
+                .environmentObject(canvasModel)
             
             //MARK: Canvas Actions
             HStack(spacing: 15){
@@ -26,7 +27,7 @@ struct Home: View {
                 }
                 Spacer()
                 Button{
-                    
+                    canvasModel.showImagePicer.toggle()
                 } label: {
                     Image(systemName: "photo.on.rectangle")
                         .font(.title3)
@@ -48,6 +49,9 @@ struct Home: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity,alignment: .bottomTrailing)
         }
         .preferredColorScheme(.dark)
+        .alert(canvasModel.errorMessage, isPresented: $canvasModel.showError){
+            
+        }
     }
 }
 
