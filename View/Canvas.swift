@@ -51,5 +51,14 @@ struct CanvasSubView <Content: View> : View {
     
     var body: some View {
         content
+            .offset(stackItem.offset)
+            .gesture(DragGesture().onChanged({ value in
+                stackItem.offset = CGSize(width: stackItem.lastOffset.width +
+                                          value.translation.width, height: stackItem.lastOffset.height +
+                value.translation.height)
+            }).onEnded({value in
+                stackItem.lastOffset = stackItem.offset
+            })
+            )
     }
 }
