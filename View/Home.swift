@@ -39,7 +39,9 @@ struct Home: View {
             
             //MARK: SAVE Button
             Button{
-                
+                canvasModel.saveCanvasImage(height: 250){
+                    Canvas().environmentObject(canvasModel)
+                }
             } label: {
                 Image(systemName: "arrow.right.circle.fill")
                     .font(.largeTitle)

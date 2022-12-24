@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class CanvasViewModel: ObservableObject {
+class CanvasViewModel:NSObject, ObservableObject {
     //MARK: Canvas Stack
     @Published var stack: [StackItem] = []
     
@@ -29,6 +29,40 @@ class CanvasViewModel: ObservableObject {
             .frame(width: 150, height: 150)
         
         stack.append(StackItem(view:AnyView(imageView)))
+    }
+    
+    func saveCanvasImage<Content: View>(height:CGFloat, @ViewBuilder content: @escaping () -> Content){
+        let uiView = UIHostingController(rootView: content())
+        let frame = CGRect(origin: .zero, size:CGSize(width: UIScreen.main.bounds.width, height: height))
+        uiView.view.frame = frame
+        
+        //MARK: Drawing Image
+        UIGraphicsBeginImageContextWithOptions(frame.size, false, 0) // Change scale for better quality
+        uiView.view.drawHierarchy(in: frame, afterScreenUpdates: true)
+        //Retriewing current drawn image
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        //Closing context
+        UIGraphicsEndImageContext()
+        if let newImage = newImage {
+            //print(newImage.pngData())
+            writeToAlbum(image: newImage)
+        }
+        
+    }
+    
+    //MARK: Writing To Album
+    func writeToAlbum(image:UIImage){
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompletion(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+    @objc
+    func saveCompletion(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer){
+        if let error = error {
+            self.errorMessage = error.localizedDescription
+            self.showError.toggle()
+        } else {
+            self.errorMessage = "Saved Sucessfully"
+            self.showError.toggle()
+        }
     }
 }
 
