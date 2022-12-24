@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Canvas: View {
-    var height: CGFloat = 260
+    var height: CGFloat = 460
     @EnvironmentObject var canvasModel: CanvasViewModel
     var body: some View {
         GeometryReader{ proxy in
@@ -23,6 +23,10 @@ struct Canvas: View {
                         stackItem.view
                     } moveFront: {
                         moveViewToFront(stackItem: stackItem)
+                    } onDelete: {
+                        //MARK: Ask if user doesnt make mistake tapped
+                        canvasModel.currentlyTappedItem = stackItem
+                        canvasModel.showDeleteAlert.toggle()
                     }
                 }
             }
@@ -31,6 +35,16 @@ struct Canvas: View {
         //MARK:Your desired height
         .frame(height: height)
         .clipped()
+        .alert("Are you sure to delete image?", isPresented: $canvasModel.showDeleteAlert) {
+            Button(role: .destructive) {
+                if let item = canvasModel.currentlyTappedItem{
+                    let index = getIndex(stackItem: item)
+                    canvasModel.stack.remove(at: index)
+                }
+            } label: {
+                Text("Yes")
+            }
+        }
     }
     
     func moveViewToFront(stackItem: StackItem){
@@ -61,11 +75,13 @@ struct CanvasSubView <Content: View> : View {
     var content: Content
     @Binding var stackItem: StackItem
     var moveFront: () -> ()
+    var onDelete: () -> ()
     
-    init(stackItem: Binding<StackItem>,@ViewBuilder content: @escaping ()-> Content, moveFront: @escaping ()->()){
+    init(stackItem: Binding<StackItem>,@ViewBuilder content: @escaping ()-> Content, moveFront: @escaping ()->(), onDelete: @escaping () -> ()){
         self.content = content()
         self._stackItem = stackItem
         self.moveFront = moveFront
+        self.onDelete = onDelete
     }
     
     @State var hapticScale: CGFloat = 1
@@ -76,12 +92,33 @@ struct CanvasSubView <Content: View> : View {
             .scaleEffect(stackItem.scale < 0.4 ? 0.4 : stackItem.scale)
             .scaleEffect(hapticScale)
             .offset(stackItem.offset)
+            .gesture(
+                TapGesture(count: 2)
+                    .onEnded({ _ in
+                        onDelete()
+                    })
+                    .simultaneously(with:
+                                        LongPressGesture(minimumDuration: 0.3)
+                        .onEnded({_ in
+                            UIImpactFeedbackGenerator(style: .medium)
+                                .impactOccurred()
+                            withAnimation(.easeInOut) {
+                                hapticScale = 1.2
+                            }
+                            withAnimation(.easeInOut.delay(0.1)) {
+                                hapticScale = 1
+                            }
+                            moveFront()
+                            
+                        })
+                                   )
+            )
             .onLongPressGesture(minimumDuration: 0.3) {
                 UIImpactFeedbackGenerator(style: .medium)
                     .impactOccurred()
-                    withAnimation(.easeInOut) {
-                        hapticScale = 1.2
-                    }
+                withAnimation(.easeInOut) {
+                    hapticScale = 1.2
+                }
                 withAnimation(.easeInOut.delay(0.1)) {
                     hapticScale = 1
                 }
@@ -116,7 +153,7 @@ struct CanvasSubView <Content: View> : View {
                             stackItem.lastRotation = stackItem.rotation
                             
                         })
-                 )
+                                   )
             )
     }
 }

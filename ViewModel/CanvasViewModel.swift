@@ -20,6 +20,11 @@ class CanvasViewModel:NSObject, ObservableObject {
     @Published var showError: Bool = false
     @Published var errorMessage: String = ""
     
+    
+    //MARK: Delete Alert
+    @Published var showDeleteAlert: Bool = false
+    @Published var currentlyTappedItem: StackItem?
+    
     //MARK: Adding Image to Stack
     func addImageToStack(image: UIImage){
         //MARK: creating SwiftUi Image View and append it to stack
@@ -32,7 +37,8 @@ class CanvasViewModel:NSObject, ObservableObject {
     }
     
     func saveCanvasImage<Content: View>(height:CGFloat, @ViewBuilder content: @escaping () -> Content){
-        let uiView = UIHostingController(rootView: content())
+        // removing safe area because it pushing view to bottom
+        let uiView = UIHostingController(rootView: content().padding(.top,-safeArea().top))
         let frame = CGRect(origin: .zero, size:CGSize(width: UIScreen.main.bounds.width, height: height))
         uiView.view.frame = frame
         
@@ -63,6 +69,18 @@ class CanvasViewModel:NSObject, ObservableObject {
             self.errorMessage = "Saved Sucessfully"
             self.showError.toggle()
         }
+    }
+    
+    func safeArea() -> UIEdgeInsets{
+        guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+            return .zero
+        }
+        
+        guard let safeArea = screen.windows.first?.safeAreaInsets else {
+            return .zero
+        }
+        
+        return safeArea
     }
 }
 
